@@ -1,6 +1,6 @@
 import json, urllib2, inspect, traceback
 
-class ChannelDebug:
+class DebugChannel:
     def __init__(self, url, port, channel):
         self.url = "%s:%s/%s" % (url, port, channel)
 

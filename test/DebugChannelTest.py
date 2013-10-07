@@ -1,11 +1,11 @@
-from ChannelDebug import ChannelDebug
+from DebugChannel import DebugChannel
 from unittest import TestCase
 from model.Person import Person
 
-class ChannelDebugTest(TestCase):
+class DebugChannelTest(TestCase):
 
     def setUp(self):
-        self.d = ChannelDebug('http://192.168.2.17', '1025', 'hello/world')
+        self.d = DebugChannel('http://192.168.2.17', '1025', 'hello/world')
 
 
     def testLogStringDoesNotThrowException(self):
