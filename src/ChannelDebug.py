@@ -16,7 +16,7 @@ class ChannelDebug:
             'Content-Type': 'application/json',
             'User-Agent': "Mozilla/5.0"
         }
-        result = self.wrap(self.normalize(object))
+        result = self.wrap(self.normalize(object, set()))
         jsonCode = json.dumps(result)
         req = Request(self.url, jsonCode)
         map(lambda (x,y): req.add_header(x,y), headers.items())
@@ -38,31 +38,33 @@ class ChannelDebug:
     def stackTrace(self):
         return []
 
-    def normalize(self, object):
+    def normalize(self, object, history):
+        if id(object) in history: return "RECURSION"
+        newHistory = set(history)
+        newHistory.add(id(object))
         if hasattr(object, '__dict__'):
             return {
-                "class": map(lambda x: x.__module__ + "." + x.__name__, self.buildClassChain(object.__class__)),
-                "properties": self.buildProperties(object),
+                "class": map(
+                    lambda x: x.__module__ + "." + x.__name__,
+                    self.buildClassChain(object.__class__)
+                ),
+                "properties": self.buildProperties(object, newHistory),
                 "methods": self.buildMethods(object),
-                "static": self.buildStaticProperties(object),
+                "static": self.buildStaticProperties(object, newHistory),
                 "constants": []
             }
-        else:
-            return {"scalar": object}
+        return {"scalar": object}
 
     def buildClassChain(self, clazz):
         if clazz == object.__class__: return [clazz]
-
         results = [clazz]
         for base in clazz.__bases__:
             chain = self.buildClassChain(base)
             results.extend(chain)
-
         return results
 
-    def buildProperties(self, object):
-        return {k: self.normalize(v) for k,v in object.__dict__.items()}
-
+    def buildProperties(self, object, history):
+        return {k: self.normalize(v, history) for k,v in object.__dict__.items()}
 
     def buildMethods(self, object):
         members = {}
@@ -70,8 +72,8 @@ class ChannelDebug:
             members[name] = value.func_code.co_varnames[1:]
         return members
 
-    def buildStaticProperties(self, object):
-        return {k:self.normalize(v)
+    def buildStaticProperties(self, object, history):
+        return {k:self.normalize(v, history)
                 for (k,v) in object.__class__.__dict__.items()
                 if not (k.startswith("__") or k.endswith("__") or inspect.ismethod(v) or inspect.isfunction(v))
         }
