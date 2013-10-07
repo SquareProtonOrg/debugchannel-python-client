@@ -25,6 +25,7 @@ class ChannelDebugTest(TestCase):
     def testLogRecursionDoesNotThrowException(self):
         class Node(object): pass
         n1, n2 = Node(), Node()
+        n1.name, n2.name = "NODE 1", "NODE 2"
         n1.neighbour, n2.neighbour = n2, n1
         self.d.log(n1)
 
