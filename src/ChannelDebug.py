@@ -2,6 +2,8 @@ import urllib2
 import json
 from urllib2 import Request
 import inspect
+import traceback
+import sys
 
 class ChannelDebug:
 
@@ -28,15 +30,24 @@ class ChannelDebug:
             return responseText
 
     def wrap(self, object):
-        self.stackTrace()
         return {
             "handler": "object",
             "args": [ object],
-            "stacktrace": self.stackTrace()
+            "stacktrace": self.stackTrace(3)
         }
 
-    def stackTrace(self):
-        return []
+    def stackTrace(self, dropCount):
+    	try:
+    		raise Exception()
+    	except Exception, e:
+    		stack = traceback.extract_stack()
+    		stack.reverse()
+    		result = []
+    		for module, line, function, code in stack:
+    			result.append( {"location": module, "fn": "%s:%s" % (function, line)} )
+    		for i in range(dropCount):
+    			del result[0]
+    	return result
 
     def normalize(self, object, history):
         if id(object) in history: return "RECURSION"
