@@ -5,9 +5,10 @@ import inspect
 
 class ChannelDebug:
 
-
     def __init__(self, url, port, channel):
         self.url = "%s:%s/%s" % (url, port, channel)
+
+    def call(self, *args, **kwargs): return self.log(*args, **kwargs)
 
     def log(self, object):
         headers = {
