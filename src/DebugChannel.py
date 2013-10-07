@@ -4,7 +4,7 @@ class DebugChannel:
     def __init__(self, url, port, channel):
         self.url = "%s:%s/%s" % (url, port, channel)
 
-    def call(self, *args, **kwargs): return self.log(*args, **kwargs)
+    def __call__(self, *args, **kwargs): return self.log(*args, **kwargs)
 
     def log(self, object):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', 'User-Agent': "Mozilla/5.0"} 
@@ -47,5 +47,5 @@ class DebugChannel:
     def buildStaticProperties(self, object, history):
         return {k:self.normalize(v, history)
                 for (k,v) in object.__class__.__dict__.items()
-                if not (k.startswith("__") or k.endswith("__") or inspect.ismethod(v) or inspect.isfunction(v))
+                if not (k[:2]+k[-2:] == "____" or inspect.ismethod(v) or inspect.isfunction(v))
         }
