@@ -3,12 +3,14 @@ __author__ = 'joseph'
 import sys
 import os
 
-sys.path.insert(0,os.path.abspath('../src'))
-sys.path.insert(0,os.path.abspath('../src/ChannelDebug.py'))
-sys.path.insert(0,os.path.abspath('./ChannelDebugTest.py'))
+p = lambda rel: os.path.join(os.path.dirname(__file__), rel)
+
+sys.path.insert(0,p('../src'))
+sys.path.insert(0,p('../src/DebugChannel.py'))
+sys.path.insert(0,p('./DebugChannelTest.py'))
 
 #print "\n".join(sys.path)
-from ChannelDebugTest import ChannelDebugTest
+from DebugChannelTest import DebugChannelTest
 import unittest
 
 
