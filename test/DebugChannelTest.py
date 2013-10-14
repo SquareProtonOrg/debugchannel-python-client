@@ -5,7 +5,7 @@ from model.Person import Person
 class DebugChannelTest(TestCase):
 
     def setUp(self):
-        self.d = DebugChannel('http://192.168.2.17', '1025', 'hello/world')
+        self.d = DebugChannel('http://192.168.2.18', '1025', 'hello/world')
 
 
     def testLogStringDoesNotThrowException(self):
